@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A professional To-Do List application with task management, priority levels, and productivity tracking." />
+  <meta name="author" content="Final Year Project" />
+  <title>TaskFlow — Professional To-Do List</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== BACKGROUND PARTICLES ===== -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="fa-solid fa-check-double logo-icon"></i>
+        <span class="logo-text">TaskFlow</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-label">OVERVIEW</p>
+      <ul class="nav-list">
+        <li class="nav-item active" data-filter="all" id="nav-all">
+          <i class="fa-solid fa-house nav-icon"></i>
+          <span class="nav-text">All Tasks</span>
+          <span class="nav-badge" id="badge-all">0</span>
+        </li>
+        <li class="nav-item" data-filter="today" id="nav-today">
+          <i class="fa-solid fa-sun nav-icon"></i>
+          <span class="nav-text">Today</span>
+          <span class="nav-badge" id="badge-today">0</span>
+        </li>
+        <li class="nav-item" data-filter="upcoming" id="nav-upcoming">
+          <i class="fa-solid fa-calendar nav-icon"></i>
+          <span class="nav-text">Upcoming</span>
+          <span class="nav-badge" id="badge-upcoming">0</span>
+        </li>
+        <li class="nav-item" data-filter="completed" id="nav-completed">
+          <i class="fa-solid fa-circle-check nav-icon"></i>
+          <span class="nav-text">Completed</span>
+          <span class="nav-badge" id="badge-completed">0</span>
+        </li>
+      </ul>
+
+      <p class="nav-label">PRIORITY</p>
+      <ul class="nav-list">
+        <li class="nav-item" data-filter="high" id="nav-high">
+          <span class="priority-dot high"></span>
+          <span class="nav-text">High Priority</span>
+          <span class="nav-badge" id="badge-high">0</span>
+        </li>
+        <li class="nav-item" data-filter="medium" id="nav-medium">
+          <span class="priority-dot medium"></span>
+          <span class="nav-text">Medium Priority</span>
+          <span class="nav-badge" id="badge-medium">0</span>
+        </li>
+        <li class="nav-item" data-filter="low" id="nav-low">
+          <span class="priority-dot low"></span>
+          <span class="nav-text">Low Priority</span>
+          <span class="nav-badge" id="badge-low">0</span>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Progress Section -->
+    <div class="sidebar-progress">
+      <div class="progress-header">
+        <span>Daily Progress</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="progress-sub" id="progressSub">0 of 0 tasks done</p>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main" id="mainContent">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">All Tasks</h1>
+        <p class="page-date" id="pageDate"></p>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search tasks…" aria-label="Search tasks" />
+        </div>
+        <button class="sort-btn" id="sortBtn" title="Sort tasks">
+          <i class="fa-solid fa-arrow-down-wide-short"></i>
+        </button>
+        <div class="sort-dropdown" id="sortDropdown">
+          <button class="sort-opt active" data-sort="created">Date Created</button>
+          <button class="sort-opt" data-sort="priority">Priority</button>
+          <button class="sort-opt" data-sort="due">Due Date</button>
+          <button class="sort-opt" data-sort="alpha">Alphabetical</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="stat-card" id="stat-total">
+        <i class="fa-solid fa-list-check stat-icon"></i>
+        <div>
+          <p class="stat-num" id="stat-total-num">0</p>
+          <p class="stat-label">Total</p>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-done">
+        <i class="fa-solid fa-trophy stat-icon gold"></i>
+        <div>
+          <p class="stat-num" id="stat-done-num">0</p>
+          <p class="stat-label">Completed</p>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-pending">
+        <i class="fa-solid fa-hourglass-half stat-icon amber"></i>
+        <div>
+          <p class="stat-num" id="stat-pending-num">0</p>
+          <p class="stat-label">Pending</p>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-overdue">
+        <i class="fa-solid fa-triangle-exclamation stat-icon red"></i>
+        <div>
+          <p class="stat-num" id="stat-overdue-num">0</p>
+          <p class="stat-label">Overdue</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Task Form -->
+    <section class="add-task-section" aria-label="Add new task">
+      <div class="add-task-card">
+        <div class="add-task-row">
+          <input
+            type="text"
+            id="taskInput"
+            class="task-input"
+            placeholder="✦  Add a new task…"
+            maxlength="120"
+            autocomplete="off"
+            aria-label="Task name"
+          />
+          <button class="add-btn" id="addTaskBtn" aria-label="Add task">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Task</span>
+          </button>
+        </div>
+        <div class="add-task-meta">
+          <div class="meta-field">
+            <label for="taskCategory"><i class="fa-solid fa-tag"></i> Category</label>
+            <input type="text" id="taskCategory" class="meta-input" placeholder="e.g. Study, Work…" />
+          </div>
+          <div class="meta-field">
+            <label for="taskDue"><i class="fa-solid fa-calendar-day"></i> Due Date</label>
+            <input type="date" id="taskDue" class="meta-input" />
+          </div>
+          <div class="meta-field">
+            <label for="taskPriority"><i class="fa-solid fa-flag"></i> Priority</label>
+            <select id="taskPriority" class="meta-input" aria-label="Select priority">
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="meta-field">
+            <label for="taskNote"><i class="fa-solid fa-note-sticky"></i> Note</label>
+            <input type="text" id="taskNote" class="meta-input" placeholder="Optional note…" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Task List -->
+    <section class="task-section" aria-label="Task list">
+      <div class="task-list-header">
+        <h2 class="task-list-title" id="taskListTitle">Tasks</h2>
+        <button class="clear-btn" id="clearCompletedBtn" title="Clear completed tasks">
+          <i class="fa-solid fa-broom"></i> Clear Completed
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">
+          <i class="fa-solid fa-clipboard-list"></i>
+        </div>
+        <h3>No tasks here yet!</h3>
+        <p>Add your first task using the form above.</p>
+      </div>
+
+      <!-- Task List Container -->
+      <ul class="task-list" id="taskList" role="list" aria-label="Task list items"></ul>
+    </section>
+
+  </main>
+
+  <!-- ===== EDIT MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle"><i class="fa-solid fa-pen-to-square"></i> Edit Task</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="editTaskName">Task Name</label>
+        <input type="text" id="editTaskName" class="modal-input" maxlength="120" />
+
+        <label for="editCategory">Category</label>
+        <input type="text" id="editCategory" class="modal-input" />
+
+        <label for="editDue">Due Date</label>
+        <input type="date" id="editDue" class="modal-input" />
+
+        <label for="editPriority">Priority</label>
+        <select id="editPriority" class="modal-input">
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+
+        <label for="editNote">Note</label>
+        <textarea id="editNote" class="modal-input modal-textarea" rows="3" placeholder="Add a note…"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" id="modalCancel">Cancel</button>
+        <button class="modal-save" id="modalSave">
+          <i class="fa-solid fa-floppy-disk"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
